@@ -10,38 +10,17 @@ let path2 = getPath(input2);
 
 let dists = findIntersectionsDists(path1, path2);
 
-console.log(Math.min(dists));
-
-// let position1 = {
-//     x: 0,
-//     y: 0
-// };
-
-// let position2 = {
-//     x: 0,
-//     y: 0
-// };
-
-// let distances = new Array();
-// let limit = Math.max(input1.length, input2.length); 
-// for(let i = 0; i < limit; i++) {
-//     if(i < input1.length) move(position1, input1[i]);
-//     if(i < input2.length) move(position2, input2[i]);
-//     if(position1.x === position2.x && position1.y === position2.y) {
-//         let manhattanDist = Math.abs(position1.x) + Math.abs(position1.y);
-//         distances.push(manhattanDist);
-//     }
-// }
-
-// console.log(Math.min(distances));
+console.log(Math.min(...dists));
 
 function findIntersectionsDists(path1, path2) {
     let intersectionsDists = new Array();
-    for(position1 of path1) {
-        for(position2 of path2) {
-            if(equals(position1, position2)) {
+    for (position1 of path1) {
+        console.log("Checking: x = " + position1.x + ", y = " + position1.y);
+        for (position2 of path2) {
+            if (equals(position1, position2)) {
                 let manhattanDist = Math.abs(position1.x) + Math.abs(position1.y);
-                intersectionsDists.push(manhattanDist)
+                intersectionsDists.push(manhattanDist);
+                console.log("Found intersection: x = " + position1.x + ", y = " + position1.y);
             }
         }
     }
@@ -53,35 +32,40 @@ function equals(position1, position2) {
 }
 
 function getPath(input) {
-    let position = {x: 0, y: 0};
+    let position = { x: 0, y: 0 };
     let path = new Array();
-    for(value of input) {
-        move(position, value);
-        //TODO: Add every position in between to path
-        path.push( {x: position.x, y: position.y} );
+    for (value of input) {
+        let subPath = move(position, value);
+        position = subPath[subPath.length - 1];
+        path.push(...subPath);
+        console.log("Handled " + value)
     }
     return path;
 }
 
-function move(position, input) {
+function move(initialPosition, input) {
+    let direction = input.charAt(0);
     let distance = parseInt(input.slice(1, input.length));
-    if(input.startsWith("U")) {
-        position.y += distance; 
+    let newPosition = { x: initialPosition.x, y: initialPosition.y };
+    let path = new Array();
+    for (let i = 0; i < distance; i++) {
+        switch (direction) {
+            case "U":
+                newPosition.y += 1;
+                break;
+            case "D":
+                newPosition.y -= 1;
+                break;
+            case "R":
+                newPosition.x += 1;
+                break;
+            case "L":
+                newPosition.x -= 1;
+                break;
+            default:
+                throw `Unexpected position modifier ${position}`;
+        }
+        path.push({x: newPosition.x, y: newPosition.y});
     }
-    else if(input.startsWith("D")) {
-        position.y -= distance; 
-    }
-    else if(input.startsWith("R")) {
-        position.x += distance; 
-    }
-    else if(input.startsWith("L")) {
-        position.x -= distance; 
-    }
-    else {
-        throw `Unexpected position modifier ${ position }`;
-    }
+    return path;
 }
-
-
-
-

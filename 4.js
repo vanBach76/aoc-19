@@ -1,3 +1,4 @@
+const util = require("./util.js");
 
 test1 = 111111;
 test2 = 223450;
@@ -27,19 +28,10 @@ for(let i = 137683; i <= 596253; i++) {
 console.log("Found " + validPasswords.length + " valid passwords.");
 
 function isValidPassword(password) {
-    let intArray = toIntArray(password);
+    let intArray = util.toIntArray(password);
     return intArray.length == 6
         && checkNonDecreasingDigits(intArray)
         && checkAdjecantDigits(intArray);
-}
-
-function toIntArray(password) {
-    output = [],
-    sNumber = password.toString();
-    for(stringDigit of sNumber) {
-        output.push(parseInt(stringDigit));
-    }
-    return output;
 }
 
 function checkAdjecantDigits(intArray) {
